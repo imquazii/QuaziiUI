@@ -227,7 +227,7 @@ local function addonScrollBoxUpdate(self, data, offset, totalLines)
                 line.versionLabel:SetTextColor(1, 0, 1, 1)
                 line.enabledLabel:SetTextColor(1, 0, 1, 1)
                 if profileType == "TankDPS" then
-                    addonLabelBaseText = addonTitle .. " (" .. L["Tank"] .. "/" .. L["DPS"] .. "/" .. L["Heals"] .. ")"
+                    addonLabelBaseText = addonTitle .. " (" .. L["Tank"] .. "/" .. L["DPS"] .. ")"
                 elseif profileType == "Healer" then
                     addonLabelBaseText = addonTitle .. " (" .. L["Healer"] .. ")"
                 end
