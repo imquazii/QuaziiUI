@@ -143,7 +143,7 @@ local function createPanel()
     panel.Title:SetTextColor(unpack(QuaziiUI.textColorRGBA))
     panel.Title:SetPoint("CENTER", panel.TitleBar, "CENTER", 0, 1)
     -- Explicitly set the desired title text
-    panel.Title:SetText("Quazii UI Installer (2025.07.29)")
+    panel.Title:SetText("Quazii UI Installer (2025.08.04)")
 
     -- Panel Options
     panel:ClearAllPoints()
