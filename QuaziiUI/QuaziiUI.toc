@@ -1,4 +1,4 @@
-## Interface: 110005
+## Interface: 110200
 ## Title: |cFF30D1FFQuazii|r UI (Retail)
 ## IconTexture: Interface\AddOns\QuaziiUI\assets\quaziiLogo
 ## AddonCompartmentFunc: QuaziiUI_CompartmentClick
