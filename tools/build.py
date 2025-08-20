@@ -5,6 +5,8 @@ from json import load
 raw_import_data: dict = {}
 wa_class_list: list = []
 wa_non_class_list: list = []
+mdt_w_routes_list: list = []
+mdt_adv_routes_list: list = []
 
 
 def get_import_files():
