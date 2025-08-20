@@ -45,33 +45,27 @@ jobs:
                   # Fetch all tags to ensure we have the latest version information
                   git fetch --tags
                   
-                  # Get the latest tag name across all branches
-                  LATEST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1) 2>/dev/null)
-
-                  if [ -z "$LATEST_TAG" ]; then
-                    # If no tags exist, start with v1.0.1
-                    NEW_VERSION="1.0.1"
+                  # Use date-based versioning: 2025.08.20.X format
+                  DATE_VERSION=$(date +%Y.%m.%d)
+                  
+                  # Check if a tag with today's date already exists
+                  EXISTING_TAGS=$(git tag -l "v${DATE_VERSION}.*" | sort -V)
+                  
+                  if [ -z "$EXISTING_TAGS" ]; then
+                    # No tags for today, start with .1
+                    BUILD_NUMBER="1"
                   else
-                    # Increment the patch version of the last tag
-                    # Remove 'v' prefix for version manipulation
-                    LATEST_VERSION=${LATEST_TAG#v}
-                    
-                    # Split version into parts
-                    MAJOR=$(echo $LATEST_VERSION | cut -d. -f1)
-                    MINOR=$(echo $LATEST_VERSION | cut -d. -f2)
-                    PATCH=$(echo $LATEST_VERSION | cut -d. -f3)
-                    
-                    # Increment patch version
-                    NEW_PATCH=$((PATCH + 1))
-                    
-                    # Assemble new version string
-                    NEW_VERSION="$MAJOR.$MINOR.$NEW_PATCH"
+                    # Get the highest build number for today and increment
+                    LATEST_BUILD=$(echo "$EXISTING_TAGS" | tail -1 | sed "s/v${DATE_VERSION}.//" )
+                    BUILD_NUMBER=$((LATEST_BUILD + 1))
                   fi
+                  
+                  NEW_VERSION="${DATE_VERSION}.${BUILD_NUMBER}"
                   
                   echo "TAG=v$NEW_VERSION" >> $GITHUB_ENV
                   echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
                   echo "ZIP_NAME=QuaziiUI-v$NEW_VERSION.zip" >> $GITHUB_ENV
-                  echo "Latest tag was: $LATEST_TAG"
+                  echo "Existing tags for today: $EXISTING_TAGS"
                   echo "New version will be: v$NEW_VERSION"
             
             # Step 5: Modify QuaziiUI/init.lua if DEBUG_MODE is true
@@ -133,6 +127,17 @@ jobs:
                   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               run: |
                   echo "Debug: Creating release for tag ${{ env.TAG }}"
+                  
+                  # Check if release already exists
+                  if gh release view ${{ env.TAG }} >/dev/null 2>&1; then
+                    echo "Release ${{ env.TAG }} already exists. Deleting and recreating..."
+                    gh release delete ${{ env.TAG }} --yes
+                    # Also delete the tag if it exists
+                    git tag -d ${{ env.TAG }} 2>/dev/null || true
+                    git push origin --delete ${{ env.TAG }} 2>/dev/null || true
+                  fi
+                  
+                  # Create the release
                   gh release create ${{ env.TAG }} \
                     ${{ env.ZIP_NAME }} \
                     --title "QuaziiUI ${{ env.TAG }}" \
