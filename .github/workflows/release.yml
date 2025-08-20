@@ -45,27 +45,23 @@ jobs:
                   # Fetch all tags to ensure we have the latest version information
                   git fetch --tags
                   
-                  # Use date-based versioning: 2025.08.20.X format
-                  DATE_VERSION=$(date +%Y.%m.%d)
+                  # Get the latest semantic version tag (v1.0.x format)
+                  LATEST_TAG=$(git tag -l "v1.0.*" | sort -V | tail -1)
                   
-                  # Check if a tag with today's date already exists
-                  EXISTING_TAGS=$(git tag -l "v${DATE_VERSION}.*" | sort -V)
-                  
-                  if [ -z "$EXISTING_TAGS" ]; then
-                    # No tags for today, start with .1
-                    BUILD_NUMBER="1"
+                  if [ -z "$LATEST_TAG" ]; then
+                      # No v1.0.x tags exist, start with v1.0.1
+                      NEW_VERSION="1.0.1"
                   else
-                    # Get the highest build number for today and increment
-                    LATEST_BUILD=$(echo "$EXISTING_TAGS" | tail -1 | sed "s/v${DATE_VERSION}.//" )
-                    BUILD_NUMBER=$((LATEST_BUILD + 1))
+                      # Extract the patch number and increment it
+                      PATCH_VERSION=$(echo $LATEST_TAG | sed 's/v1\.0\.//')
+                      NEW_PATCH=$((PATCH_VERSION + 1))
+                      NEW_VERSION="1.0.$NEW_PATCH"
                   fi
-                  
-                  NEW_VERSION="${DATE_VERSION}.${BUILD_NUMBER}"
                   
                   echo "TAG=v$NEW_VERSION" >> $GITHUB_ENV
                   echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
                   echo "ZIP_NAME=QuaziiUI-v$NEW_VERSION.zip" >> $GITHUB_ENV
-                  echo "Existing tags for today: $EXISTING_TAGS"
+                  echo "Latest semantic version tag: $LATEST_TAG"
                   echo "New version will be: v$NEW_VERSION"
             
             # Step 5: Modify QuaziiUI/init.lua if DEBUG_MODE is true
