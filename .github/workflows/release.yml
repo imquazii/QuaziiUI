@@ -31,11 +31,6 @@ jobs:
               with:
                   fetch-depth: 0 # Fetch all history for changelog generation
 
-            # Ensure Python is available
-            - name: Setup Python
-              uses: actions/setup-python@v5
-              with:
-                  python-version: '3.x'
 
             # Ensure zip is available
             - name: Ensure zip is installed
@@ -90,17 +85,13 @@ jobs:
                   echo "Debug: Updating .toc version to ${{ env.NEW_VERSION }}."
                   sed -i "s/@project-version@/${{ env.NEW_VERSION }}/g" "$TOC_FILE"
 
-            # Step 7: Run build.py
-            - name: Run build.py
-              run: python tools/build.py
-
-            # Step 8: Zip the QuaziiUI directory
+            # Step 7: Zip the QuaziiUI directory
             - name: Zip QuaziiUI directory
               run: |
                   echo "Debug: Zipping QuaziiUI directory to ${{ env.ZIP_NAME }}"
                   zip -r ${{ env.ZIP_NAME }} QuaziiUI
 
-            # Step 9: Generate changelog
+            # Step 8: Generate changelog
             - name: Generate changelog
               run: |
                   # Get the latest tag name across all branches
@@ -124,7 +115,7 @@ jobs:
                   echo "Debug: Generated changelog content"
                   cat CHANGELOG.md
 
-            # Step 10: Create GitHub Release
+            # Step 9: Create GitHub Release
             - name: Create GitHub Release
               env:
                   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
