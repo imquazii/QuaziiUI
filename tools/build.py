@@ -10,7 +10,8 @@ mdt_adv_routes_list: list = []
 
 
 def get_import_files():
-    path = "./imports"
+    base_dir: Path = Path(__file__).parent
+    path = str(base_dir.joinpath("imports"))
     for subdir, dirs, files in os.walk(path):
         for file in files:
             if file.endswith(".txt"):
@@ -51,13 +52,16 @@ def get_import_files():
 
 
 def get_template():
-    path: Path = Path.cwd().joinpath("imports_template.lua")
+    base_dir: Path = Path(__file__).parent
+    path: Path = base_dir.joinpath("imports_template.lua")
     with path.open() as template:
         return template.read()
 
 
 def write_template(input):
-    path: Path = Path.cwd().joinpath("../QuaziiUI/imports.lua")
+    # Write generated imports to the QuaziiUI addon directory (one level up from tools)
+    base_dir: Path = Path(__file__).parent
+    path: Path = base_dir.parent.joinpath("QuaziiUI/imports.lua")
     with open(path, "w") as template:
         template.write(input)
 
