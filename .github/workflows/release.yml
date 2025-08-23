@@ -5,7 +5,9 @@ on:
         branches:
             - main
         paths:
-            - "tools/imports/**"
+            - "tools/**"
+            - "QuaziiUI/**"
+            - ".github/workflows/**"
 
     # Manual trigger
     workflow_dispatch:
@@ -23,20 +25,25 @@ jobs:
             cancel-in-progress: true
 
         steps:
-            # Step 1: Add a delay (sleep for 15 minutes = 900 seconds), only for push events
-            - name: Wait for 15 minutes (only on push)
-              if: github.event_name == 'push'
-              run: sleep 900
-
-            # Step 2: Checkout the code
+            # Checkout the code
             - name: Checkout code
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
               with:
                   fetch-depth: 0 # Fetch all history for changelog generation
 
-            # Step 3: Install GitHub CLI (gh)
-            - name: Install GitHub CLI
-              run: sudo apt-get install gh -y
+            # Ensure Python is available
+            - name: Setup Python
+              uses: actions/setup-python@v5
+              with:
+                  python-version: '3.x'
+
+            # Ensure zip is available
+            - name: Ensure zip is installed
+              run: sudo apt-get update && sudo apt-get install -y zip
+
+            # Verify GitHub CLI availability
+            - name: Verify GitHub CLI
+              run: gh --version
 
             # Step 4: Set Version from Git Tags
             - name: Set Version from Git Tags
