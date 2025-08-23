@@ -11,44 +11,27 @@ mdt_adv_routes_list: list = []
 
 def get_import_files():
     base_dir: Path = Path(__file__).parent
-    path = str(base_dir.joinpath("imports"))
-    for subdir, dirs, files in os.walk(path):
-        for file in files:
-            if file.endswith(".txt"):
-                txt_path = os.path.join(subdir, file)
-                txt_base = txt_path.replace("./src/data/json", "")
-                txt_base = txt_base.replace("/", "_")
-                txt_base = txt_base.replace("\\", "_")[1:]
-                txt_split = txt_base.split(".")[0][1:]
-                txt_split = (
-                    txt_base.replace("tools_", "")
-                    .replace("imports_", "")
-                    .replace("addons_", "")
-                    .replace("weakauras_class_", "")
-                    .replace("elvui_", "")
-                    .replace("weakauras_non-class_", "")
-                )[1:][:-4]
-                with open(txt_path, "r", encoding="utf-8") as import_file:
-                    if "routes" in txt_path:
-                        if "PUG" in txt_path:
-                            mdt_w_routes_list.append(
-                                import_file.read().strip().join(('"', '"'))
-                            )
-                        elif "Adv" in txt_path:
-                            mdt_adv_routes_list.append(
-                                import_file.read().strip().join(('"', '"'))
-                            )
-                    elif "weakauras" in txt_path:
-                        if "class" in txt_path:
-                            wa_class_list.append(
-                                import_file.read().strip().join(('"', '"'))
-                            )
-                        elif "utility" in txt_path:
-                            wa_non_class_list.append(
-                                import_file.read().strip().join(('"', '"'))
-                            )
-                    else:
-                        raw_import_data[txt_split] = import_file.read().strip()
+    imports_dir: Path = base_dir.joinpath("imports")
+
+    for txt_path in imports_dir.rglob("*.txt"):
+        rel = txt_path.relative_to(imports_dir)
+        with txt_path.open("r", encoding="utf-8") as import_file:
+            if rel.parts[0] == "weakauras":
+                # WeakAuras lists
+                if len(rel.parts) > 1 and rel.parts[1] == "class":
+                    wa_class_list.append(import_file.read().strip().join(('"', '"')))
+                elif len(rel.parts) > 1 and rel.parts[1] == "utility":
+                    wa_non_class_list.append(import_file.read().strip().join(('"', '"')))
+            elif rel.parts[0] == "routes":
+                # Optional MDT routes support
+                if "PUG" in rel.name:
+                    mdt_w_routes_list.append(import_file.read().strip().join(('"', '"')))
+                elif "Adv" in rel.name:
+                    mdt_adv_routes_list.append(import_file.read().strip().join(('"', '"')))
+            else:
+                # Everything else becomes a {PLACEHOLDER} by filename
+                key = Path(rel.stem).name.upper()
+                raw_import_data[key] = import_file.read().strip()
 
 
 def get_template():
@@ -74,10 +57,20 @@ def process_temple():
     template = template.replace('"{CLASS_WA}"', wa_class_string)
     template = template.replace('"{NON_CLASS_WA}"', wa_non_class_string)
 
+    def lua_escape(value: str) -> str:
+        escaped = value.replace('\\', r'\\')
+        escaped = escaped.replace('"', r'\"')
+        escaped = escaped.replace('\n', r'\n').replace('\r', r'\r')
+        return escaped
+
     for k, v in raw_import_data.items():
-        replace_string = "{" + k + "}"
-        value_string = v
-        template = template.replace(replace_string, value_string)
+        # Support both quoted and unquoted placeholders in the template
+        quoted_placeholder = '"{' + k + '}"'
+        unquoted_placeholder = '{' + k + '}'
+        value_string = lua_escape(v)
+        replacement = '"' + value_string + '"'
+        template = template.replace(quoted_placeholder, replacement)
+        template = template.replace(unquoted_placeholder, replacement)
     write_template(template)
 
 
