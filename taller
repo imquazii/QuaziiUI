@@ -1,0 +1,5 @@
+[33m10532df[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Update date stamp from 2025.08.20 to 2025.08.24 and regenerate imports.lua
+[33ma6674c5[m Update monk WeakAura and fix build.py paths
+[33ma197fce[m Update imports.lua and utility WeakAura file
+[33m5ffccab[m Update monk.txt WeakAura and regenerate imports.lua
+[33m977dee0[m Fix release.yml to use semantic versioning for WowUp compatibility
