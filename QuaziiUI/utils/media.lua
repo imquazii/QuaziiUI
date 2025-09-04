@@ -25,6 +25,54 @@ LSM:Register(BACKGROUND, "Quazii", quaziiTexturePath)
 LSM:Register(STATUSBAR, "Quazii", quaziiTexturePath)
 LSM:Register(BORDER, "Quazii", quaziiTexturePath)
 
+-- Register Quazii Voice Pack (sounds)
+do
+    local voicepackBasePath = "Interface\\AddOns\\QuaziiUI\\voicepack\\"
+    local voiceFiles = {
+        "QUI2_Adds.ogg",
+        "QUI2_AOE.ogg",
+        "QUI2_Avoid.ogg",
+        "QUI2_Bait.ogg",
+        "QUI2_Bombs.ogg",
+        "QUI2_Buffed.ogg",
+        "QUI2_Buster.ogg",
+        "QUI2_Charge.ogg",
+        "QUI2_Clear.ogg",
+        "QUI2_Defensive.ogg",
+        "QUI2_Dodge.ogg",
+        "QUI2_DOT.ogg",
+        "QUI2_DPS.ogg",
+        "QUI2_Drop.ogg",
+        "QUI2_Feet.ogg",
+        "QUI2_Fixate.ogg",
+        "QUI2_Front.ogg",
+        "QUI2_Hide.ogg",
+        "QUI2_Kick.ogg",
+        "QUI2_Link.ogg",
+        "QUI2_Lust.ogg",
+        "QUI2_MoveSoon.ogg",
+        "QUI2_Orbs.ogg",
+        "QUI2_Out.ogg",
+        "QUI2_Pass.ogg",
+        "QUI2_Absorb.ogg",
+        "QUI2_Reflect.ogg",
+        "QUI2_Shield.ogg",
+        "QUI2_Soak.ogg",
+        "QUI2_Spread.ogg",
+        "QUI2_Stack.ogg",
+        "QUI2_Stop.ogg",
+        "QUI2_Swap.ogg",
+        "QUI2_Targeted.ogg",
+        "QUI2_Taunt.ogg",
+        "QUI2_Totem.ogg",
+    }
+
+    for _, fileName in ipairs(voiceFiles) do
+        local soundName = fileName:gsub("%.ogg$", "")
+        LSM:Register(SOUND, soundName, voicepackBasePath .. fileName)
+    end
+end
+
 -- Function to check if our media is registered
 function QuaziiUI:CheckMediaRegistration()
     local quaziiFontRegistered = LSM:IsValid(FONT, "Quazii")
