@@ -21,7 +21,11 @@ def get_import_files():
                 if len(rel.parts) > 1 and rel.parts[1] == "class":
                     wa_class_list.append(import_file.read().strip().join(('"', '"')))
                 elif len(rel.parts) > 1 and rel.parts[1] == "utility":
-                    wa_non_class_list.append(import_file.read().strip().join(('"', '"')))
+                    # Handle QUI Anchors separately for category 0
+                    if rel.stem == "QUI Anchors":
+                        raw_import_data["ANCHOR_WA"] = import_file.read().strip()
+                    else:
+                        wa_non_class_list.append(import_file.read().strip().join(('"', '"')))
             elif rel.parts[0] == "routes":
                 # Optional MDT routes support
                 if "PUG" in rel.name:

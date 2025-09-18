@@ -126,7 +126,7 @@ local function createPanel()
     -- Init panel
 
     -- Set initial title to just "Quazii UI" temporarily, we'll override it below
-    local panel = QuaziiUI.DF:CreateSimplePanel(UIParent, 600, 700, "Quazii UI", "QuaziiUIMainPanel") 
+    local panel = QuaziiUI.DF:CreateSimplePanel(UIParent, 600, 750, "Quazii UI", "QuaziiUIMainPanel") 
     QuaziiUI.DF:ApplyStandardBackdrop(panel)
 
     -- Comment out the version label creation
@@ -143,7 +143,7 @@ local function createPanel()
     panel.Title:SetTextColor(unpack(QuaziiUI.textColorRGBA))
     panel.Title:SetPoint("CENTER", panel.TitleBar, "CENTER", 0, 1)
     -- Explicitly set the desired title text
-    panel.Title:SetText("Quazii UI Installer (2025.09.05)")
+    panel.Title:SetText("Quazii UI Installer (2025.09.18)")
 
     -- Panel Options
     panel:ClearAllPoints()

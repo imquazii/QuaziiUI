@@ -151,12 +151,22 @@ function page:CreateHeader(frame)
 end
 
 function page:CreateDescription(frame)
+    -- Create the red warning text first
+    local warningText = QuaziiUI.DF:CreateLabel(frame, "|cFFFF0000IMPORTANT: Import Anchor WeakAuras from 'Home' tab FIRST! These invisible anchors let you position where all current and future QUI WAs appear. New and updated WAs will always retain the positions you set.|r", QuaziiUI.PageTextSize) 
+    warningText:SetFont(QuaziiUI.FontFace, QuaziiUI.PageTextSize)
+    warningText:SetWordWrap(true)
+    warningText:SetPoint("TOPLEFT", frame, "TOPLEFT", 10, -45) 
+    warningText:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -10, -45)
+    warningText:SetJustifyH("LEFT")
+    warningText:SetJustifyV("TOP")
+    
+    -- Create the original description text below the warning
     local text = QuaziiUI.DF:CreateLabel(frame, L["WeakAuraText"], QuaziiUI.PageTextSize) 
     text:SetFont(QuaziiUI.FontFace, QuaziiUI.PageTextSize)
     text:SetWordWrap(true)
-    -- Adjust positioning slightly higher as there are no tabs now
-    text:SetPoint("TOPLEFT", frame, "TOPLEFT", 10, -45) 
-    text:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -10, -45)
+    -- Position below the warning text with some spacing
+    text:SetPoint("TOPLEFT", warningText.widget, "BOTTOMLEFT", 0, -10) 
+    text:SetPoint("TOPRIGHT", warningText.widget, "BOTTOMRIGHT", 0, -10)
     text:SetJustifyH("LEFT")
     text:SetJustifyV("TOP")
     self.descriptionText = text

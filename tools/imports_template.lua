@@ -42,6 +42,15 @@ QuaziiUI.imports.ElvUI = {
 ---@type table
 QuaziiUI.imports.WAStrings = {
     ---@type table
+    [0] = {
+        ---@type string
+        name = "Anchor WeakAuras",
+        ---@type table<string>
+        WAs = {
+            "{ANCHOR_WA}"
+        }
+    },
+    ---@type table
     [1] = {
         ---@type string
         name = L["ClassWA"],

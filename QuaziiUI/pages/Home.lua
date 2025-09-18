@@ -159,6 +159,24 @@ local function goToUtilityWAs()
     QuaziiUI:selectPage(4)      -- Navigate to UtilityWeakAuras page (index 4)
 end
 
+-- Import function for Anchor WeakAuras
+local function importAnchorWeakAuras()
+    if not WeakAuras then
+        print("QuaziiUI Error: WeakAuras addon not found.")
+        return
+    end
+    
+    -- Import the Anchor WeakAuras from category 0
+    if QuaziiUI.imports.WAStrings[0] and QuaziiUI.imports.WAStrings[0].WAs and QuaziiUI.imports.WAStrings[0].WAs[1] then
+        WeakAuras.Import(QuaziiUI.imports.WAStrings[0].WAs[1])
+        print("QuaziiUI: Anchor WeakAuras imported successfully.")
+        -- Update database to track the import
+        QuaziiUI.db.global.imports.AnchorWeakAuras = { date = GetServerTime(), version = QuaziiUI.versionNumber }
+    else
+        print("QuaziiUI Error: Anchor WeakAuras import string not found.")
+    end
+end
+
 -- Create a modified list for the Home page display, with Cell first and ElvUI last
 local homePageDisplayList = {}
 do
@@ -174,6 +192,7 @@ do
             table.insert(elvuiEntries, { addonName = addonName, profileType = "Healer" })
         elseif addonName == "WeakAuras" then
              -- Store WeakAura entries separately
+             table.insert(weakAuraEntries, { addonName = addonName, profileType = "Anchor" })
              table.insert(weakAuraEntries, { addonName = addonName, profileType = "Class" })
              table.insert(weakAuraEntries, { addonName = addonName, profileType = "Utility" })
         else
@@ -233,7 +252,9 @@ local function addonScrollBoxUpdate(self, data, offset, totalLines)
                 end
             elseif addonName == "WeakAuras" then
                  -- Keep default white color
-                 if profileType == "Class" then
+                 if profileType == "Anchor" then
+                    addonLabelBaseText = "Anchor WeakAuras |cFFFF0000(MUST INSTALL)|r"
+                 elseif profileType == "Class" then
                     addonLabelBaseText = addonTitle .. " (" .. L["Class WAs"] .. ")" 
                  elseif profileType == "Utility" then
                     addonLabelBaseText = addonTitle .. " (" .. L["Utility WAs"] .. ")"
@@ -278,10 +299,14 @@ local function addonScrollBoxUpdate(self, data, offset, totalLines)
                  end
              elseif addonName == "WeakAuras" then
                   if addonEnabled then
-                     line.importButton:SetText(L["GoToPage"]) -- Keep text as Go To Page
-                     if profileType == "Class" then
+                     if profileType == "Anchor" then
+                        line.importButton:SetText(L["Import"])
+                        line.importButton:SetClickFunction(importAnchorWeakAuras)
+                     elseif profileType == "Class" then
+                        line.importButton:SetText(L["GoToPage"]) -- Keep text as Go To Page
                         line.importButton:SetClickFunction(goToClassWAs)
                      elseif profileType == "Utility" then
+                        line.importButton:SetText(L["GoToPage"]) -- Keep text as Go To Page
                         line.importButton:SetClickFunction(goToUtilityWAs)
                      else
                         line.importButton:Disable()
