@@ -77,6 +77,7 @@ do
         "QUI2_Phase Soon.ogg",
         "QUI2_Phase.ogg",
         "QUI2_Pick Up.ogg",
+        "QUI2_Power Infusion.ogg",
         "QUI2_QUI2_AOE.ogg",
         "QUI2_Reflect.ogg",
         "QUI2_Ring.ogg",
