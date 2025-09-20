@@ -195,6 +195,9 @@ do
              table.insert(weakAuraEntries, { addonName = addonName, profileType = "Anchor" })
              table.insert(weakAuraEntries, { addonName = addonName, profileType = "Class" })
              table.insert(weakAuraEntries, { addonName = addonName, profileType = "Utility" })
+        elseif addonName == "OmniCD" then
+            table.insert(otherEntries, { addonName = addonName, profileType = "TankDPS" })
+            table.insert(otherEntries, { addonName = addonName, profileType = "Healer" })
         else
             table.insert(otherEntries, { addonName = addonName })
         end
@@ -259,6 +262,12 @@ local function addonScrollBoxUpdate(self, data, offset, totalLines)
                  elseif profileType == "Utility" then
                     addonLabelBaseText = addonTitle .. " (" .. L["Utility WAs"] .. ")"
                  end
+            elseif addonName == "OmniCD" then
+                if profileType == "TankDPS" then
+                    addonLabelBaseText = addonTitle .. " (" .. L["Tank"] .. "/" .. L["DPS"] .. ")"
+                elseif profileType == "Healer" then
+                    addonLabelBaseText = addonTitle .. " (" .. L["Healer"] .. ")"
+                end
             else -- Default white for other addons
                 addonLabelBaseText = addonLabelBaseText
             end
@@ -354,8 +363,16 @@ local function addonScrollBoxUpdate(self, data, offset, totalLines)
                  end
              elseif addonName == "OmniCD" then
                  if addonEnabled then
-                     line.importButton:SetClickFunction(function() QuaziiUI:importOmniCDProfile() end)
-                     line.importButton:SetText(L["Import"])
+                     if profileType == "TankDPS" then
+                         line.importButton:SetClickFunction(function() QuaziiUI:importOmniCDProfile() end)
+                         line.importButton:SetText(L["Import"])
+                     elseif profileType == "Healer" then
+                         line.importButton:SetClickFunction(function() QuaziiUI:importOmniCDHealerProfile() end)
+                         line.importButton:SetText(L["Import"])
+                     else
+                         line.importButton:Disable()
+                         line.importButton:SetText(L["NA"])
+                     end
                  else
                      line.importButton:Disable()
                      line.importButton:SetText(L["NA"])
