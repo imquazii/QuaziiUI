@@ -82,6 +82,12 @@ QuaziiUI.imports.OmniCD = {
 }
 
 ---@type table
+QuaziiUI.imports.OmniCDHealer = {
+    ---@type string
+    data = "{OMNICD-HEALS}"
+}
+
+---@type table
 QuaziiUI.imports.Details = {
     ---@type string
     data = "{DETAILS}"
